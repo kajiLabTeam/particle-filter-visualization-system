@@ -13,11 +13,10 @@ router = APIRouter()
 
 @router.post(
     "/api/walking/start",
-    # response_model=StartWalkingResponse,
+    response_model=PerformParticleFilteringRequest,
     status_code=201,
 )
-
-async def perform_particlefiltering_controller(
+async def perform_particlefiltering(
     request: PerformParticleFilteringRequest
 ):
     """
