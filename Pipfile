@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+fastapi = "*"
 pillow = "*"
 numpy = "*"
 opencv-python = "*"
@@ -14,5 +15,4 @@ scikit-learn = "*"
 ipykernel = "*"
 
 [requires]
-python_version = "3.11"
-python_full_version = "3.11.5"
+python_version = "3.12"
