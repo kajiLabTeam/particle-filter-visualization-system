@@ -272,18 +272,18 @@ class EstimatedParticle:
 class EstimatedParticleFactory:
     @staticmethod
     def create(
-        floor_map: FloorMap, initial_position: CorrectPosition
+        floor_map: FloorMap, initial_position: CorrectPosition, initial_particle_count: int
     ) -> EstimatedParticle:
         """
         ## 初期パーティクルを散布する
         """
         particle_collection = ParticleCollection()
 
-        while len(particle_collection) < INITIAL_PARTICLES_AMOUNT:
+        while len(particle_collection) < initial_particle_count:
             x = np.random.randint(floor_map.get_map_width())
             y = np.random.randint(floor_map.get_map_height())
             direction = get_random_angle()
-            weight = 1 / INITIAL_PARTICLES_AMOUNT
+            weight = 1 / initial_particle_count
 
             if not floor_map.is_inside_floor(x=x, y=y):
                 continue

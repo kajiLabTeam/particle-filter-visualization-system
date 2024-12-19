@@ -15,15 +15,18 @@ class TrackingParticle:
         self,
         floor_map: FloorMap,
         correct_trajectory: CorrectTrajectory,
+        initial_particle_count: int
         # model_path: str = RSSI_MODEL_PATH,
     ) -> None:
         self.__coverage_count = 0
+        self.initial_particle_count = initial_particle_count
         self.__correct_trajectory = correct_trajectory
         # self.__likelihood = Likelihood(mode_path=model_path)
         self.__estimation_particles: List[EstimatedParticle] = [
             EstimatedParticleFactory().create(
                 floor_map=floor_map,
                 initial_position=correct_trajectory.get_correct_trajectory()[0],
+                initial_particle_count = initial_particle_count
             )
         ]
         self.__coverage_position: Optional[EstimatedPosition] = None
@@ -108,6 +111,7 @@ class TrackingParticle:
                 and estimation_particles.is_converged()
             ):
                 print("収束しました")
+                print(f"Initial particle count: {self.initial_particle_count}")
                 print(i)
                 estimation_particles = estimation_particles
                 self.__coverage_count = i
