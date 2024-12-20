@@ -15,18 +15,22 @@ class TrackingParticle:
         self,
         floor_map: FloorMap,
         correct_trajectory: CorrectTrajectory,
-        initial_particle_count: int
+        initial_particle_count: int,
+        particle_step_error_sd: int,
+        particle_angle_error_sd: int,
         # model_path: str = RSSI_MODEL_PATH,
     ) -> None:
         self.__coverage_count = 0
         self.initial_particle_count = initial_particle_count
+        self.particle_step_error_sd = particle_step_error_sd
+        self.particle_angle_error_sd = particle_angle_error_sd
         self.__correct_trajectory = correct_trajectory
         # self.__likelihood = Likelihood(mode_path=model_path)
         self.__estimation_particles: List[EstimatedParticle] = [
             EstimatedParticleFactory().create(
                 floor_map=floor_map,
                 initial_position=correct_trajectory.get_correct_trajectory()[0],
-                initial_particle_count = initial_particle_count
+                initial_particle_count = initial_particle_count,
             )
         ]
         self.__coverage_position: Optional[EstimatedPosition] = None
@@ -88,7 +92,10 @@ class TrackingParticle:
             estimation_particles = self.last_estimation_particles()
             estimation_particles.remove_by_floor_map()
             move_estimation_particles = estimation_particles.move(
-                current_position=position_sample
+                current_position=position_sample,
+                particle_step_error_sd=self.particle_step_error_sd,
+                particle_angle_error_sd=self.particle_angle_error_sd,
+
             )
             move_estimation_particles.remove_by_floor_map()
             move_estimation_particles.remove_by_direction(
@@ -112,7 +119,9 @@ class TrackingParticle:
             ):
                 print("収束しました")
                 print(f"Initial particle count: {self.initial_particle_count}")
-                
+                print(f"Step error standard deviation: {self.particle_step_error_sd}")
+                print(f"Angle error standard deviation: {self.particle_angle_error_sd}")
+
                 print(i)
                 estimation_particles = estimation_particles
                 self.__coverage_count = i

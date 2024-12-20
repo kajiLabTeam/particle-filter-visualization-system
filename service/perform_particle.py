@@ -25,7 +25,9 @@ def track_ideal(
     correct_trajectory_coordinates: Sequence[Sequence[int | float]],
     output_path: str,
     output_reversed_path: str,
-    initial_particle_count: int
+    initial_particle_count: int,
+    particle_step_error_sd: int,
+    particle_angle_error_sd: int,
 ):
     print(f"理想 {floor_map_path} start")
     ut = time.time()
@@ -40,10 +42,15 @@ def track_ideal(
 
     # パーティクルフィルタにおける初期状態の作成
     particle_count = initial_particle_count # 値を取得
+    step_error_sd = particle_step_error_sd # 値を取得
+    angle_error_sd = particle_angle_error_sd # 値を取得
+
     tracking_particle = TrackingParticle(
         correct_trajectory=correct_trajectory,
         floor_map=floor_map,
         initial_particle_count=particle_count,  # 取得した値を利用
+        particle_step_error_sd=step_error_sd,
+        particle_angle_error_sd=angle_error_sd
     )
     tracking_particle.track()
 
@@ -104,4 +111,6 @@ def perform_particle(initial_particle_count: int, particle_step_error_sd: int, p
             output_path=f"{IDEAL_OUTPUT_NORMAL_PATH}/result-{i}.gif",
             output_reversed_path=f"{IDEAL_OUTPUT_REVERSED_PATH}/reversed-result-{i}.gif",
             initial_particle_count=int(initial_particle_count),
+            particle_step_error_sd=int(particle_step_error_sd),
+            particle_angle_error_sd=int(particle_angle_error_sd),
         )

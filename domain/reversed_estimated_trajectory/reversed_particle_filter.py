@@ -48,6 +48,7 @@ class ReversedEstimationParticleFilter:
             estimation_particles.remove_by_floor_map()
             move_estimation_particles = estimation_particles.move(
                 current_position=reversed_position_sample
+                
             )
 
             estimation_particles.remove_by_floor_map()
