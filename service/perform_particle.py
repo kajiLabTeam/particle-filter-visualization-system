@@ -15,8 +15,8 @@ from domain.floor_map.floor_map import FloorMap
 from domain.particle_floor_map.particle_floor_map import ParticleFloorMap
 from domain.realtime_estimated_trajectory.realtime_estimated_trajectory import \
     RealtimeEstimatedTrajectory
-from domain.reversed_estimated_trajectory.reversed_estimated_trajectory import \
-    ReversedEstimatedTrajectory
+# from domain.reversed_estimated_trajectory.reversed_estimated_trajectory import \
+#     ReversedEstimatedTrajectory
 from domain.tracking_particle.tracking_particle import TrackingParticle
 
 
@@ -67,20 +67,21 @@ def track_ideal(
             file_path=output_path,
         )
 
-        reversed_estimated_by_cluster_trajectory = ReversedEstimatedTrajectory(
-            tracking_particle=tracking_particle,
-            method="particle_filter",
-        )
-        print(
-            f"推定出発点 x: {reversed_estimated_by_cluster_trajectory[0].get_x()} y: {reversed_estimated_by_cluster_trajectory[0].get_y()} 方向: {reversed_estimated_by_cluster_trajectory[0].get_direction()}"
-        )
+        # 逆パーティクルフィルタの実行
+        # reversed_estimated_by_cluster_trajectory = ReversedEstimatedTrajectory(
+        #     tracking_particle=tracking_particle,
+        #     method="particle_filter",
+        # )
+        # print(
+        #     f"推定出発点 x: {reversed_estimated_by_cluster_trajectory[0].get_x()} y: {reversed_estimated_by_cluster_trajectory[0].get_y()} 方向: {reversed_estimated_by_cluster_trajectory[0].get_direction()}"
+        # )
 
-        ParticleFloorMap.generate_reversed_gif(
-            floor_map=floor_map,
-            tracking_particle=tracking_particle,
-            reversed_estimated_trajectory=reversed_estimated_by_cluster_trajectory,
-            file_path=output_reversed_path,
-        )
+        # ParticleFloorMap.generate_reversed_gif(
+        #     floor_map=floor_map,
+        #     tracking_particle=tracking_particle,
+        #     reversed_estimated_trajectory=reversed_estimated_by_cluster_trajectory,
+        #     file_path=output_reversed_path,
+        # )
     else:
         ParticleFloorMap.generate_realtime_gif(
             floor_map=floor_map,

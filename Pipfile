@@ -11,6 +11,7 @@ opencv-python = "*"
 pandas = "*"
 scikit-learn = "*"
 uvicorn = "*"
+moviepy = "*"
 
 [dev-packages]
 ipykernel = "*"
