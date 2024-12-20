@@ -27,6 +27,8 @@ class EstimatedParticle:
         floor_map: FloorMap,
         current_position: CorrectPosition,
         particle_collection: ParticleCollection,
+        particle_step_error_sd: int = PARTICLES_STEP_ERROR(),
+        particle_angle_error_sd: int = PARTICLES_ANGLE_ERROR(),
     ):
         particle_collection.shuffle()
 
