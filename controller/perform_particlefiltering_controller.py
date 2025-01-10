@@ -11,13 +11,25 @@ initial_particle_count = 1000 # 初期値
 particle_step_error_sd = 10
 particle_angle_error_sd = 10
 
+class Hyperparameters(BaseModel):
+    initial_particle_count: int
+    convergence_judgment_clusters_count: int
+    particle_step_error_sd: int
+    particle_angle_error_sd: int
+
+class Settings(BaseModel):
+    map_matching: bool
+    fingerprint: bool
+    clusters_color: bool
+    correct_trajectory: bool
+    estimated_trajectory: bool
+
 class PerformParticleFilteringRequest(BaseModel):
     """
     Request model for the perform_particlefiltering_controller
     """
-    initial_particle_count: int
-    particle_step_error_sd : int
-    particle_angle_error_sd : int
+    hyperparameters: Hyperparameters
+    settings: Settings
 
 class PerformParticleFilteringResponse(BaseModel):
     """
@@ -44,9 +56,9 @@ async def perform_particlefiltering(
     Perform particle filtering
     """
     perform_particle(
-        request.initial_particle_count,
-        request.particle_step_error_sd,
-        request.particle_angle_error_sd
+        initial_particle_count=request.hyperparameters.initial_particle_count,
+        particle_step_error_sd=request.hyperparameters.particle_step_error_sd,
+        particle_angle_error_sd=request.hyperparameters.particle_angle_error_sd
     )
 
     # GIFをMP4に変換

@@ -22,8 +22,6 @@ from domain.particle_collection.particle_collection import ParticleCollection
 from utils.angle import get_random_angle
 
 
-
-
 class EstimatedParticle:
     def __init__(
         self,
