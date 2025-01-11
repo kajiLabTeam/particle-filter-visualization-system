@@ -12,7 +12,7 @@ class AngleConverter:
 
     def generate_correct_trajectory(self, time_unit: float = 0.7) -> CorrectTrajectory:
         """
-        ## 角速度積分して角度の変化量を計算し、正しい軌跡を生成する
+        ## 角速度積分して角度の変化量を計算し,正しい軌跡を生成
         """
         angle_df = self.__calculate_cumulative_angle(
             gyro_df=self.__raw_data_df, time_unit=time_unit
