@@ -1,0 +1,18 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.8.4
+    hooks:
+      # Run the linter.
+      - id: ruff
+      # Run the formatter.
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: compile-requirements
+        name: Compile requirements from pyproject.toml
+        entry: bash -c "uv pip compile pyproject.toml > requirements.txt"
+        language: system
+        types: [file]
+        files: ^pyproject\.toml$
