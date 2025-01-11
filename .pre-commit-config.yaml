@@ -15,4 +15,4 @@ repos:
         entry: bash -c "uv pip compile pyproject.toml > requirements.txt"
         language: system
         types: [file]
-        files: ^server/pyproject\.toml$
+        files: ^pyproject\.toml$
