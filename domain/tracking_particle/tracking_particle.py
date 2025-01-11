@@ -4,7 +4,9 @@ from config.const.amount import CONVERGENCE_JUDGEMENT_NUMBER
 from domain.correct_position.correct_position import CorrectPosition
 from domain.correct_trajectory.correct_trajectory import CorrectTrajectory
 from domain.estimated_particle.estimated_particle import (
-    EstimatedParticle, EstimatedParticleFactory)
+    EstimatedParticle,
+    EstimatedParticleFactory,
+)
 from domain.estimated_position.estimated_position import EstimatedPosition
 from domain.floor_map.floor_map import FloorMap
 from utils.angle import reverse_angle
@@ -30,7 +32,7 @@ class TrackingParticle:
             EstimatedParticleFactory().create(
                 floor_map=floor_map,
                 initial_position=correct_trajectory.get_correct_trajectory()[0],
-                initial_particle_count = initial_particle_count,
+                initial_particle_count=initial_particle_count,
             )
         ]
         self.__coverage_position: Optional[EstimatedPosition] = None
@@ -95,7 +97,6 @@ class TrackingParticle:
                 current_position=position_sample,
                 particle_step_error_sd=self.particle_step_error_sd,
                 particle_angle_error_sd=self.particle_angle_error_sd,
-
             )
             move_estimation_particles.remove_by_floor_map()
             move_estimation_particles.remove_by_direction(

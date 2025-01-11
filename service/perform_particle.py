@@ -5,16 +5,23 @@ from typing import Sequence
 
 from PIL import Image
 
-from config.const.coordinate import (CORRECT_TRAJECTORY_COORDINATES1,
-                                     CORRECT_TRAJECTORY_COORDINATES2,
-                                     CORRECT_TRAJECTORY_COORDINATES3)
-from config.const.path import (IDEAL_IMAGE_PATH, IDEAL_OUTPUT_NORMAL_PATH,
-                               IDEAL_OUTPUT_REVERSED_PATH)
+from config.const.coordinate import (
+    CORRECT_TRAJECTORY_COORDINATES1,
+    CORRECT_TRAJECTORY_COORDINATES2,
+    CORRECT_TRAJECTORY_COORDINATES3,
+)
+from config.const.path import (
+    IDEAL_IMAGE_PATH,
+    IDEAL_OUTPUT_NORMAL_PATH,
+    IDEAL_OUTPUT_REVERSED_PATH,
+)
 from domain.correct_trajectory.correct_trajectory import CorrectTrajectory
 from domain.floor_map.floor_map import FloorMap
 from domain.particle_floor_map.particle_floor_map import ParticleFloorMap
-from domain.realtime_estimated_trajectory.realtime_estimated_trajectory import \
-    RealtimeEstimatedTrajectory
+from domain.realtime_estimated_trajectory.realtime_estimated_trajectory import (
+    RealtimeEstimatedTrajectory,
+)
+
 # from domain.reversed_estimated_trajectory.reversed_estimated_trajectory import \
 #     ReversedEstimatedTrajectory
 from domain.tracking_particle.tracking_particle import TrackingParticle
@@ -41,16 +48,16 @@ def track_ideal(
     # アルゴリズム説明；https://kjlb.esa.io/posts/5514
 
     # パーティクルフィルタにおける初期状態の作成
-    particle_count = initial_particle_count # 値を取得
-    step_error_sd = particle_step_error_sd # 値を取得
-    angle_error_sd = particle_angle_error_sd # 値を取得
+    particle_count = initial_particle_count  # 値を取得
+    step_error_sd = particle_step_error_sd  # 値を取得
+    angle_error_sd = particle_angle_error_sd  # 値を取得
 
     tracking_particle = TrackingParticle(
         correct_trajectory=correct_trajectory,
         floor_map=floor_map,
         initial_particle_count=particle_count,  # 取得した値を利用
         particle_step_error_sd=step_error_sd,
-        particle_angle_error_sd=angle_error_sd
+        particle_angle_error_sd=angle_error_sd,
     )
     tracking_particle.track()
 
@@ -93,7 +100,11 @@ def track_ideal(
     print(f"elapsed_time: {time.time() - ut}")
 
 
-def perform_particle(initial_particle_count: int, particle_step_error_sd: int, particle_angle_error_sd: int):
+def perform_particle(
+    initial_particle_count: int,
+    particle_step_error_sd: int,
+    particle_angle_error_sd: int,
+):
     # 理想の軌跡を生成
     ideal_file_count = len(glob(os.path.join(IDEAL_IMAGE_PATH, "*")))
     for i in range(1, ideal_file_count + 1):

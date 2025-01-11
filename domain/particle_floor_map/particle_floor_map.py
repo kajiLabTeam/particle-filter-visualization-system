@@ -2,21 +2,26 @@ from typing import List, Tuple
 
 from PIL.Image import Image
 
-from config.const.color import (CANDIDATE_PARTICLES_COLOR,
-                                CORRECT_CURRENT_POSITION_COLOR,
-                                CORRECT_TRAJECTORY_COLOR, OUTLINE_COLOR,
-                                PARTICLE_OUTLINE_COLOR,
-                                REALTIME_ESTIMATED__CURRENT_POSITION_COLOR,
-                                REALTIME_ESTIMATED_TRAJECTORY_COLOR,
-                                REVERSE_CURRENT_ESTIMATED_POSITION_COLOR,
-                                REVERSE_ESTIMATED_TRAJECTORY_COLOR)
+from config.const.color import (
+    CANDIDATE_PARTICLES_COLOR,
+    CORRECT_CURRENT_POSITION_COLOR,
+    CORRECT_TRAJECTORY_COLOR,
+    OUTLINE_COLOR,
+    PARTICLE_OUTLINE_COLOR,
+    REALTIME_ESTIMATED__CURRENT_POSITION_COLOR,
+    REALTIME_ESTIMATED_TRAJECTORY_COLOR,
+    REVERSE_CURRENT_ESTIMATED_POSITION_COLOR,
+    REVERSE_ESTIMATED_TRAJECTORY_COLOR,
+)
 from domain.correct_trajectory.correct_trajectory import CorrectTrajectory
 from domain.estimated_particle.estimated_particle import EstimatedParticle
 from domain.floor_map.floor_map import FloorMap
-from domain.realtime_estimated_trajectory.realtime_estimated_trajectory import \
-    RealtimeEstimatedTrajectory
-from domain.reversed_estimated_trajectory.reversed_estimated_trajectory import \
-    ReversedEstimatedTrajectory
+from domain.realtime_estimated_trajectory.realtime_estimated_trajectory import (
+    RealtimeEstimatedTrajectory,
+)
+from domain.reversed_estimated_trajectory.reversed_estimated_trajectory import (
+    ReversedEstimatedTrajectory,
+)
 from domain.tracking_particle.tracking_particle import TrackingParticle
 
 

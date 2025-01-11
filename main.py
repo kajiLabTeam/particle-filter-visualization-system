@@ -6,7 +6,6 @@ from controller import health_check_controller as health_check_router
 from controller import perform_particlefiltering_controller as perform_particlefiltering
 
 
-
 """サーバー周りの設定"""
 app = FastAPI()
 
@@ -20,4 +19,3 @@ app.add_middleware(
 
 app.include_router(perform_particlefiltering.router)
 app.include_router(health_check_router.router)
-

@@ -3,15 +3,15 @@ from typing import List, Literal
 import numpy as np
 import random
 
-from config.const.amount import (CLUSTER_AMOUNT_THRESHOLD,
-                                 CONVERGENCE_DECENTRALIZATION_THRESHOLD,
-                                 INITIAL_PARTICLES_AMOUNT,
-                                 MISSING_PARTICLE_THRESHOLD,
-                                 SEARCH_NEAREST_INSIDE_RANGE)
+from config.const.amount import (
+    CLUSTER_AMOUNT_THRESHOLD,
+    CONVERGENCE_DECENTRALIZATION_THRESHOLD,
+    INITIAL_PARTICLES_AMOUNT,
+    MISSING_PARTICLE_THRESHOLD,
+    SEARCH_NEAREST_INSIDE_RANGE,
+)
 from config.const.circle import REVERSE_RADIUS
-from config.const.error import (PARTICLES_ANGLE_ERROR,
-                                PARTICLES_DIRECTION_ERROR,
-                                PARTICLES_STEP_ERROR)
+from config.const.error import PARTICLES_ANGLE_ERROR, PARTICLES_DIRECTION_ERROR
 from domain.correct_position.correct_position import CorrectPosition
 from domain.estimated_particle.convergence_judgment import ConvergenceJudgment
 from domain.estimated_position.estimated_position import EstimatedPosition
@@ -47,7 +47,6 @@ class EstimatedParticle:
 
     def get_particle_collection(self) -> ParticleCollection:
         return self.__particle_collection
-    
 
     def is_converged(self) -> bool:
         """
@@ -99,7 +98,12 @@ class EstimatedParticle:
         """
         return 1 / self.__particle_collection.get_decentralization()
 
-    def move(self, current_position: CorrectPosition, particle_step_error_sd: int, particle_angle_error_sd: int ) -> "EstimatedParticle":
+    def move(
+        self,
+        current_position: CorrectPosition,
+        particle_step_error_sd: int,
+        particle_angle_error_sd: int,
+    ) -> "EstimatedParticle":
         """
         ## ベクトルの向きに合わせてパーティクルを移動させる
         """
@@ -274,7 +278,9 @@ class EstimatedParticle:
 class EstimatedParticleFactory:
     @staticmethod
     def create(
-        floor_map: FloorMap, initial_position: CorrectPosition, initial_particle_count: int 
+        floor_map: FloorMap,
+        initial_position: CorrectPosition,
+        initial_particle_count: int,
     ) -> EstimatedParticle:
         """
         ## 初期パーティクルを散布する
@@ -303,7 +309,6 @@ class EstimatedParticleFactory:
             floor_map=floor_map,
             current_position=initial_position,
             particle_collection=particle_collection,
-            
         )
 
     @staticmethod

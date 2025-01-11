@@ -1,7 +1,9 @@
 from typing import List
 
 from domain.estimated_particle.estimated_particle import (
-    EstimatedParticle, EstimatedParticleFactory)
+    EstimatedParticle,
+    EstimatedParticleFactory,
+)
 from domain.estimated_position.estimated_position import EstimatedPosition
 from domain.tracking_particle.tracking_particle import TrackingParticle
 
@@ -48,7 +50,6 @@ class ReversedEstimationParticleFilter:
             estimation_particles.remove_by_floor_map()
             move_estimation_particles = estimation_particles.move(
                 current_position=reversed_position_sample
-
             )
 
             estimation_particles.remove_by_floor_map()
