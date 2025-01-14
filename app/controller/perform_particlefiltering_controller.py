@@ -1,9 +1,11 @@
+import io
+
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
+from moviepy.editor import VideoFileClip
 from pydantic import BaseModel
+
 from app.service.perform_particle import perform_particle
-import io
-from moviepy import VideoFileClip
 
 # モジュールレベルの変数として particle_count を定義
 initial_particle_count = 1000  # 初期値
@@ -27,18 +29,14 @@ class Settings(BaseModel):
 
 
 class PerformParticleFilteringRequest(BaseModel):
-    """
-    Request model for the perform_particlefiltering_controller
-    """
+    """Request model for the perform_particlefiltering_controller"""
 
     hyperparameters: Hyperparameters
     settings: Settings
 
 
 class PerformParticleFilteringResponse(BaseModel):
-    """
-    Response model for the perform_particlefiltering_controller
-    """
+    """Response model for the perform_particlefiltering_controller"""
 
     particle_gif: str
 
@@ -51,7 +49,7 @@ router = APIRouter()
     response_model=PerformParticleFilteringResponse,
     status_code=201,
 )
-async def perform_particlefiltering(request: PerformParticleFilteringRequest):
+async def perform_particlefiltering(request: PerformParticleFilteringRequest) -> StreamingResponse:
     gif_path = "data/output/ideal/normal/result-1.gif"
     mp4_path = "data/output/ideal/normal/result-1.mp4"
 
@@ -71,16 +69,14 @@ async def perform_particlefiltering(request: PerformParticleFilteringRequest):
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="GIF file not found")
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Error converting GIF to MP4: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Error converting GIF to MP4: {e!s}") from e
 
     try:
         with open(mp4_path, "rb") as mp4_file:
             video_raw = mp4_file.read()
             byte_io = io.BytesIO(video_raw)
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="MP4 file not found")
+    except FileNotFoundError as err:
+        raise HTTPException(status_code=404, detail="MP4 file not found") from err
 
     # MP4ファイルをレスポンスとして返す
     return StreamingResponse(byte_io, media_type="video/mp4")

@@ -1,5 +1,3 @@
-from typing import Dict, Tuple
-
 import numpy as np
 import pandas as pd
 from numpy.typing import NDArray
@@ -16,17 +14,15 @@ class Likelihood:
         self.__y = np.linspace(
             0, int(max(self.__rssi_model_df["y"])), int(max(self.__rssi_model_df["y"]))
         )
-        self.__X, self.__Y = np.meshgrid(self.__x, self.__y)
-        self.__rssi = self.__rssi_model_df["rssi"].to_numpy().reshape(self.__X.shape)
+        self.__matrix_x, self.matrix_y = np.meshgrid(self.__x, self.__y)
+        self.__rssi = self.__rssi_model_df["rssi"].to_numpy().reshape(self.__matrix_x.shape)
         self.__std_dev = np.std(self.__rssi)
 
         # キャッシュを初期化
-        self.__likelihood_cache: Dict[float, NDArray[np.float64]] = {}
+        self.__likelihood_cache: dict[float, NDArray[np.float64]] = {}
 
     def __generate_likelihood_function(self, rssi_input: float) -> NDArray[np.float64]:
-        """
-        ## rssiを受け取り、rssiモデルを元に座標の確率密度関数を作成する
-        """
+        """## rssiを受け取り、rssiモデルを元に座標の確率密度関数を作成する"""
         # キャッシュをチェック
         if rssi_input in self.__likelihood_cache:
             return self.__likelihood_cache[rssi_input]
@@ -48,31 +44,27 @@ class Likelihood:
         return likelihood
 
     def __get_likelihood_from_coordinate(
-        self, coordinate: Tuple[int, int], likelihood: NDArray[np.float64]
+        self, coordinate: tuple[int, int], likelihood: NDArray[np.float64]
     ) -> float:
-        """
-        ## 座標を入力して尤度を取得
-        """
+        """## 座標を入力して尤度を取得"""
         x, y = coordinate
         # 座標の範囲チェック
         if (
-            x < self.__X.min()
-            or x > self.__X.max()
-            or y < self.__Y.min()
-            or y > self.__Y.max()
+            x < self.__matrix_x.min()
+            or x > self.__matrix_x.max()
+            or y < self.matrix_y.min()
+            or y > self.matrix_y.max()
         ):
             return 0.0
 
         # 座標に最も近いインデックスを取得
-        idx_x = (np.abs(self.__X[0, :] - x)).argmin()
-        idx_y = (np.abs(self.__Y[:, 0] - y)).argmin()
+        idx_x = (np.abs(self.__matrix_x[0, :] - x)).argmin()
+        idx_y = (np.abs(self.matrix_y[:, 0] - y)).argmin()
 
         return float(likelihood[idx_y, idx_x])
 
     def get_likelihood(self, particle: Particle, rssi: float) -> float:
-        """
-        ## パーティクルの尤度を取得する
-        """
+        """## パーティクルの尤度を取得する"""
         likelihood = self.__generate_likelihood_function(rssi)
         return self.__get_likelihood_from_coordinate(
             (particle.get_x(), particle.get_y()), likelihood

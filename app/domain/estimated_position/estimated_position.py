@@ -1,7 +1,5 @@
 class EstimatedPosition:
-    def __init__(
-        self, x: int, y: int, step: int, direction: float, changed_angle: int
-    ) -> None:
+    def __init__(self, x: int, y: int, step: int, direction: float, changed_angle: int) -> None:
         self.__x = x
         self.__y = y
         self.__step = step

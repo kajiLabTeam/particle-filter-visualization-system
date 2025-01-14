@@ -14,3 +14,8 @@ dependencies = [
     "scikit-learn>=1.6.1",
     "uvicorn>=0.34.0",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9.1",
+]

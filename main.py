@@ -1,12 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-
 from app.controller import health_check_controller as health_check_router
 from app.controller import (
     perform_particlefiltering_controller as perform_particlefiltering,
 )
-
 
 """サーバー周りの設定"""
 app = FastAPI()

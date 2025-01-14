@@ -1,6 +1,7 @@
-from typing import List, Tuple
+from typing import TYPE_CHECKING
 
-from PIL.Image import Image
+if TYPE_CHECKING:
+    from PIL.Image import Image
 
 from app.config.const.color import (
     CANDIDATE_PARTICLES_COLOR,
@@ -32,11 +33,9 @@ class ParticleFloorMap:
         tracking_particle: TrackingParticle,
         reversed_estimated_trajectory: ReversedEstimatedTrajectory,
         file_path: str,
-    ):
-        """
-        ## 推定されたパーティクルの軌跡をGIFアニメーションとして生成する
-        """
-        images_cluster: List[Image] = []
+    ) -> None:
+        """## 推定されたパーティクルの軌跡をGIFアニメーションとして生成する"""
+        images_cluster: list[Image] = []
 
         for i, estimation_particles in enumerate(tracking_particle):
             floor_map_copy = floor_map.clone()
@@ -83,7 +82,7 @@ class ParticleFloorMap:
             loop=0,
         )
 
-        print(f"Generated GIF: {file_path}")
+        print(f"Generated GIF: {file_path}")  # noqa: T201
 
     @staticmethod
     def generate_realtime_gif(
@@ -91,11 +90,9 @@ class ParticleFloorMap:
         tracking_particle: TrackingParticle,
         realtime_estimated_trajectory: RealtimeEstimatedTrajectory,
         file_path: str,
-    ):
-        """
-        ## 推定されたパーティクルの軌跡をGIFアニメーションとして生成する
-        """
-        images_cluster: List[Image] = []
+    ) -> None:
+        """## 推定されたパーティクルの軌跡をGIFアニメーションとして生成する"""
+        images_cluster: list[Image] = []
 
         for i, estimation_particles in enumerate(tracking_particle):
             floor_map_copy = floor_map.clone()
@@ -142,21 +139,21 @@ class ParticleFloorMap:
             loop=0,
         )
 
-        print(f"Generated GIF: {file_path}")
+        print(f"Generated GIF: {file_path}")  # noqa: T201
 
     @staticmethod
     def __drawing_trajectory(
         floor_map: FloorMap,
-        current_position: Tuple[int, int],
-        current_color: Tuple[int, int, int, int],
+        current_position: tuple[int, int],
+        current_color: tuple[int, int, int, int],
         trajectory: (
             EstimatedParticle
             | CorrectTrajectory
             | RealtimeEstimatedTrajectory
             | ReversedEstimatedTrajectory
         ),
-        trajectory_color: Tuple[int, int, int, int],
-    ):
+        trajectory_color: tuple[int, int, int, int],
+    ) -> None:
         for position_sample in trajectory:
             floor_map.depict_circle(
                 position=(position_sample.get_x(), position_sample.get_y()),

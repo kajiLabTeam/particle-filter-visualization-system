@@ -1,15 +1,15 @@
-import random
+import secrets
 
 
 def get_random_angle() -> float:
-    return random.randint(0, 360)
+    return secrets.randbelow(361)
 
 
 def reverse_angle(angle: float) -> float:
     return (angle + 180) % 360
 
 
-def correction_angle(angle: float | int) -> float:
+def correction_angle(angle: float) -> float:
     return angle % 360
 
 
