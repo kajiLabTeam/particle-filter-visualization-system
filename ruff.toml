@@ -1,0 +1,30 @@
+line-length = 100
+
+[format]
+docstring-code-format = true
+
+[lint]
+select = ["ALL"]
+ignore = [
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D105",
+    "D107",
+    "D203",
+    "D213",
+    "D415",
+    "D400",
+    "COM812",
+    "ISC001",
+    "RUF001",
+    "FA102",
+    "INP001",
+    "PLR0913",
+    "B904",
+    "PTH123",
+    "ASYNC230"
+]
+unfixable = ["F401", "F841", "COM812", "ISC001"]

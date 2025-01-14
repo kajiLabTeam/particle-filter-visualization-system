@@ -1,6 +1,6 @@
 import math
-import random
-from typing import Callable, Tuple
+import secrets
+from typing import Callable
 
 from app.config.const.error import PARTICLES_ANGLE_ERROR
 
@@ -12,7 +12,7 @@ class Particle:
         y: int,
         weight: float,
         direction: float,
-    ):
+    ) -> None:
         self.__x = x
         self.__y = y
         self.__weight = weight
@@ -20,12 +20,10 @@ class Particle:
 
     @classmethod
     def create_random_particle(cls, x_range: int, y_range: int) -> "Particle":
-        """
-        ## ランダムなパーティクルを生成する
-        """
-        x = random.randint(0, x_range)
-        y = random.randint(0, y_range)
-        direction = random.randint(0, 359)
+        """## ランダムなパーティクルを生成する"""
+        x = secrets.randbelow(x_range + 1)
+        y = secrets.randbelow(y_range + 1)
+        direction = secrets.randbelow(360)
 
         return Particle(x=x, y=y, weight=1.0, direction=direction)
 
@@ -38,28 +36,26 @@ class Particle:
     def get_direction(self) -> float:
         return self.__direction
 
-    def get_color(self) -> Tuple[int, int, int, int]:
+    def get_color(self) -> tuple[int, int, int, int]:
         return self.__color
 
     def get_weight(self) -> float:
         return self.__weight
 
-    def set_weight(self, weight: float):
+    def set_weight(self, weight: float) -> None:
         self.__weight = weight
 
-    def set_color(self, color: Tuple[int, int, int, int]):
+    def set_color(self, color: tuple[int, int, int, int]) -> None:
         self.__color = color
 
     def new(self, weight: float, step: int, direction_error: float) -> "Particle":
-        """
-        ## 指定されたパーティクルの座標と角度を元に新しいパーティクルを生成する
-        """
+        """## 指定されたパーティクルの座標と角度を元に新しいパーティクルを生成する"""
         if step < 0:
-            new_x = int(self.__x + random.randint(step, -step))
-            new_y = int(self.__y + random.randint(step, -step))
+            new_x = int(self.__x + secrets.randbelow(abs(step * 2 + 1)) - step)
+            new_y = int(self.__y + secrets.randbelow(abs(step * 2 + 1)) - step)
         else:
-            new_x = int(self.__x + random.randint(-step, step))
-            new_y = int(self.__y + random.randint(-step, step))
+            new_x = int(self.__x + secrets.randbelow(step * 2 + 1) - step)
+            new_y = int(self.__y + secrets.randbelow(step * 2 + 1) - step)
         new_direction = self.__direction + direction_error
 
         return Particle(
@@ -86,16 +82,12 @@ class Particle:
         move_x = int(self.__x + step_total * math.cos(radian))
         move_y = int(self.__y + step_total * math.sin(radian))
 
-        return Particle(
-            x=move_x, y=move_y, direction=move_direction, weight=self.__weight
-        )
+        return Particle(x=move_x, y=move_y, direction=move_direction, weight=self.__weight)
 
     def is_straight_direction_to_wall(
         self, step: int, is_inside_floor: Callable[[int, int], bool]
     ) -> bool:
-        """
-        ## パーティクルの歩幅以内に壁に向いているかを判定する
-        """
+        """## パーティクルの歩幅以内に壁に向いているかを判定する"""
         radian = math.radians(self.__direction)
 
         for i in range(1, step + 1):
@@ -110,9 +102,7 @@ class Particle:
     def is_turn_direction_to_wall(
         self, step: int, is_inside_floor: Callable[[int, int], bool]
     ) -> bool:
-        """
-        ## 90度回転したパーティクルが壁に埋まっているかを判定する
-        """
+        """## 90度回転したパーティクルが壁に埋まっているかを判定する"""
         plus_turn_move_particle = self.move(
             changed_angle=90,
             step=step,
@@ -132,10 +122,8 @@ class Particle:
             minus_turn_move_particle.get_x(), minus_turn_move_particle.get_y()
         )
 
-    def is_inside_circle(self, circle_center: Tuple[int, int], radius: int) -> bool:
-        """
-        ## 指定された座標が円の中にあるかどうかを判定する。
-        """
+    def is_inside_circle(self, circle_center: tuple[int, int], radius: int) -> bool:
+        """## 指定された座標が円の中にあるかどうかを判定する"""
         cx, cy = circle_center
         px, py = self.__x, self.__y
 

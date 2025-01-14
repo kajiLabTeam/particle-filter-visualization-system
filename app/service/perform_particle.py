@@ -1,7 +1,6 @@
-import os
 import time
-from glob import glob
-from typing import Sequence
+from collections.abc import Sequence
+from pathlib import Path
 
 from PIL import Image
 
@@ -21,9 +20,6 @@ from app.domain.particle_floor_map.particle_floor_map import ParticleFloorMap
 from app.domain.realtime_estimated_trajectory.realtime_estimated_trajectory import (
     RealtimeEstimatedTrajectory,
 )
-
-# from app.domain.reversed_estimated_trajectory.reversed_estimated_trajectory import \
-#     ReversedEstimatedTrajectory
 from app.domain.tracking_particle.tracking_particle import TrackingParticle
 
 
@@ -31,12 +27,11 @@ def track_ideal(
     floor_map_path: str,
     correct_trajectory_coordinates: Sequence[Sequence[int | float]],
     output_path: str,
-    output_reversed_path: str,
     initial_particle_count: int,
     particle_step_error_sd: int,
     particle_angle_error_sd: int,
-):
-    print(f"理想 {floor_map_path} start")
+) -> None:
+    print(f"理想 {floor_map_path} start")  # noqa: T201
     ut = time.time()
 
     # フロアマップと正解軌跡の生成
@@ -45,7 +40,7 @@ def track_ideal(
     correct_trajectory = CorrectTrajectory(correct_trajectory_coordinates)
 
     # パーティクルフィルタによる追跡の実行
-    # アルゴリズム説明；https://kjlb.esa.io/posts/5514
+    # アルゴリズム説明:https://kjlb.esa.io/posts/5514
 
     # パーティクルフィルタにおける初期状態の作成
     particle_count = initial_particle_count  # 値を取得
@@ -61,9 +56,7 @@ def track_ideal(
     )
     tracking_particle.track()
 
-    realtime_estimated_trajectory = RealtimeEstimatedTrajectory(
-        tracking_particle=tracking_particle
-    )
+    realtime_estimated_trajectory = RealtimeEstimatedTrajectory(tracking_particle=tracking_particle)
 
     # Gifの生成処理
     if tracking_particle.get_coverage_position() is not None:
@@ -74,21 +67,6 @@ def track_ideal(
             file_path=output_path,
         )
 
-        # 逆パーティクルフィルタの実行
-        # reversed_estimated_by_cluster_trajectory = ReversedEstimatedTrajectory(
-        #     tracking_particle=tracking_particle,
-        #     method="particle_filter",
-        # )
-        # print(
-        #     f"推定出発点 x: {reversed_estimated_by_cluster_trajectory[0].get_x()} y: {reversed_estimated_by_cluster_trajectory[0].get_y()} 方向: {reversed_estimated_by_cluster_trajectory[0].get_direction()}"
-        # )
-
-        # ParticleFloorMap.generate_reversed_gif(
-        #     floor_map=floor_map,
-        #     tracking_particle=tracking_particle,
-        #     reversed_estimated_trajectory=reversed_estimated_by_cluster_trajectory,
-        #     file_path=output_reversed_path,
-        # )
     else:
         ParticleFloorMap.generate_realtime_gif(
             floor_map=floor_map,
@@ -97,16 +75,16 @@ def track_ideal(
             file_path=output_path,
         )
 
-    print(f"elapsed_time: {time.time() - ut}")
+    print(f"elapsed_time: {time.time() - ut}")  # noqa: T201
 
 
 def perform_particle(
     initial_particle_count: int,
     particle_step_error_sd: int,
     particle_angle_error_sd: int,
-):
+) -> None:
     # 理想の軌跡を生成
-    ideal_file_count = len(glob(os.path.join(IDEAL_IMAGE_PATH, "*")))
+    ideal_file_count = len(list(Path(IDEAL_IMAGE_PATH).glob("*")))
     for i in range(1, ideal_file_count + 1):
         # パーティクルフィルタの実行
         track_ideal(
@@ -116,7 +94,7 @@ def perform_particle(
                 if i == 1
                 else (
                     CORRECT_TRAJECTORY_COORDINATES2
-                    if i == 2
+                    if i == 2  # noqa: PLR2004
                     else CORRECT_TRAJECTORY_COORDINATES3
                 )
             ),

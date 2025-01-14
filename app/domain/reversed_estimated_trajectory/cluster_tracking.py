@@ -1,5 +1,3 @@
-from typing import List
-
 from app.config.const.circle import REVERSE_RADIUS
 from app.domain.estimated_position.estimated_position import EstimatedPosition
 from app.domain.tracking_particle.tracking_particle import TrackingParticle
@@ -7,10 +5,10 @@ from app.domain.tracking_particle.tracking_particle import TrackingParticle
 
 class ClusterTracking:
     @staticmethod
-    def run(tracking_particle: TrackingParticle) -> List[EstimatedPosition]:
+    def run(tracking_particle: TrackingParticle) -> list[EstimatedPosition]:
         starting_point = tracking_particle.last_estimated_position()
 
-        reversed_estimated_positions: List[EstimatedPosition] = [
+        reversed_estimated_positions: list[EstimatedPosition] = [
             EstimatedPosition(
                 x=starting_point.get_x(),
                 y=starting_point.get_y(),
@@ -23,17 +21,13 @@ class ClusterTracking:
         tracking_particle.reverse()
 
         for _, estimation_particles in enumerate(tracking_particle):
-            tracking_particle_collection = (
-                estimation_particles.get_particles_within_radius(
-                    x=reversed_estimated_positions[-1].get_x(),
-                    y=reversed_estimated_positions[-1].get_y(),
-                    radius=REVERSE_RADIUS,
-                )
+            tracking_particle_collection = estimation_particles.get_particles_within_radius(
+                x=reversed_estimated_positions[-1].get_x(),
+                y=reversed_estimated_positions[-1].get_y(),
+                radius=REVERSE_RADIUS,
             )
 
-            reversed_estimated_positions.append(
-                tracking_particle_collection.estimate_position()
-            )
+            reversed_estimated_positions.append(tracking_particle_collection.estimate_position())
 
         tracking_particle.reverse()
 

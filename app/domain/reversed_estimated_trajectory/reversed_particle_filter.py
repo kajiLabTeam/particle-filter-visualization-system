@@ -1,5 +1,3 @@
-from typing import List
-
 from app.domain.estimated_particle.estimated_particle import (
     EstimatedParticle,
     EstimatedParticleFactory,
@@ -10,10 +8,10 @@ from app.domain.tracking_particle.tracking_particle import TrackingParticle
 
 class ReversedEstimationParticleFilter:
     @staticmethod
-    def run(tracking_particle: TrackingParticle) -> List[EstimatedPosition]:
+    def run(tracking_particle: TrackingParticle) -> list[EstimatedPosition]:
         starting_point, coverage_count = tracking_particle.get_coverage_position()
 
-        print(
+        print(  # noqa: T201
             "逆推定開始点",
             "x:",
             starting_point.get_x(),
@@ -25,7 +23,7 @@ class ReversedEstimationParticleFilter:
             coverage_count,
         )
 
-        reversed_estimated_positions: List[EstimatedPosition] = [
+        reversed_estimated_positions: list[EstimatedPosition] = [
             EstimatedPosition(
                 x=starting_point.get_x(),
                 y=starting_point.get_y(),
@@ -34,7 +32,7 @@ class ReversedEstimationParticleFilter:
                 changed_angle=starting_point.get_changed_angle(),
             )
         ]
-        reversed_estimation_particles: List[EstimatedParticle] = [
+        reversed_estimation_particles: list[EstimatedParticle] = [
             EstimatedParticleFactory().reverse_create(
                 floor_map=tracking_particle.last_estimation_particles().get_floor_map(),
                 final_position=starting_point,
@@ -53,18 +51,14 @@ class ReversedEstimationParticleFilter:
             )
 
             estimation_particles.remove_by_floor_map()
-            estimation_particles.remove_by_direction(
-                step=reversed_position_sample.get_step()
-            )
-            # estimation_particles.update_weight()
+            estimation_particles.remove_by_direction(step=reversed_position_sample.get_step())
+            # estimation_particles.update_weight()  # noqa: ERA001
             move_estimation_particles.resampling(
                 step=reversed_position_sample.get_step(), mode="reversed"
             )
 
             reversed_estimation_particles.append(move_estimation_particles)
-            reversed_estimated_positions.append(
-                move_estimation_particles.estimate_position()
-            )
+            reversed_estimated_positions.append(move_estimation_particles.estimate_position())
 
         tracking_particle.set_estimation_particles(reversed_estimation_particles)
 

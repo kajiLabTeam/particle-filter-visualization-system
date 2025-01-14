@@ -5,9 +5,7 @@ from pydantic import BaseModel
 
 
 class HealthCheckResponse(BaseModel):
-    """
-    Response model for the health_check_controller
-    """
+    """Response model for the health_check_controller"""
 
     message: str
 
@@ -20,8 +18,6 @@ router = APIRouter()
     response_model=HealthCheckResponse,
     status_code=200,
 )
-async def health_check():
-    """
-    Health check
-    """
+async def health_check() -> dict:
+    """Health check"""
     return {"message": "I'm alive"}

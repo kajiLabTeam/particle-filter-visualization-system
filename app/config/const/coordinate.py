@@ -1,7 +1,5 @@
-from typing import List
-
 # x, y, 歩幅, 進行方向, 角度の変化量, 発信機1のRSSI, 発信機2のRSSI
-CORRECT_TRAJECTORY_COORDINATES1: List[List[int]] = (
+CORRECT_TRAJECTORY_COORDINATES1: list[list[int]] = (
     [[x, 300, 60, 90, 0] for _, x in enumerate(range(350, 2650, 60))]
     + [[2650, 350, 0, 180, 90]]
     + [[2650, y, 60, 180, 0] for _, y in enumerate(range(350, 1100, 60))]
@@ -18,7 +16,7 @@ CORRECT_TRAJECTORY_COORDINATES1: List[List[int]] = (
 )
 
 # x, y, 歩幅, 進行方向, 角度の変化量, 発信機1のRSSI, 発信機2のRSSI
-CORRECT_TRAJECTORY_COORDINATES2: List[List[float]] = [
+CORRECT_TRAJECTORY_COORDINATES2: list[list[float]] = [
     [620, 620, 60, 90, 0, -31.71, -89.95],
     [680, 620, 60, 90, 0, -32.75, -89.94],
     [740, 620, 60, 90, 0, -34.18, -89.92],
@@ -113,7 +111,7 @@ CORRECT_TRAJECTORY_COORDINATES2: List[List[float]] = [
 ]
 
 # x, y, 歩幅, 進行方向, 角度の変化量
-CORRECT_TRAJECTORY_COORDINATES3: List[List[int]] = [
+CORRECT_TRAJECTORY_COORDINATES3: list[list[int]] = [
     [461, 450, 0, 180, 0],
     [456, 486, 36, 188, 8],
     [457, 532, 46, 179, 351],
