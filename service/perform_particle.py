@@ -28,6 +28,7 @@ def track_ideal(
     initial_particle_count: int,
     particle_step_error_sd: int,
     particle_angle_error_sd: int,
+    convergence_judgment_clusters_count: int,
 ):
     print(f"理想 {floor_map_path} start")
     ut = time.time()
@@ -50,7 +51,8 @@ def track_ideal(
         floor_map=floor_map,
         initial_particle_count=particle_count,  # 取得した値を利用
         particle_step_error_sd=step_error_sd,
-        particle_angle_error_sd=angle_error_sd
+        particle_angle_error_sd=angle_error_sd,
+        convergence_judgment_clusters_count=convergence_judgment_clusters_count
     )
     tracking_particle.track()
 
@@ -93,7 +95,7 @@ def track_ideal(
     print(f"elapsed_time: {time.time() - ut}")
 
 
-def perform_particle(initial_particle_count: int, particle_step_error_sd: int, particle_angle_error_sd: int):
+def perform_particle(initial_particle_count: int, particle_step_error_sd: int, particle_angle_error_sd: int, convergence_judgment_clusters_count: int):
     # 理想の軌跡を生成
     ideal_file_count = len(glob(os.path.join(IDEAL_IMAGE_PATH, "*")))
     for i in range(1, ideal_file_count + 1):
@@ -114,4 +116,5 @@ def perform_particle(initial_particle_count: int, particle_step_error_sd: int, p
             initial_particle_count=int(initial_particle_count),
             particle_step_error_sd=int(particle_step_error_sd),
             particle_angle_error_sd=int(particle_angle_error_sd),
+            convergence_judgment_clusters_count=int(convergence_judgment_clusters_count),
         )

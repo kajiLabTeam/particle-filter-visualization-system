@@ -49,7 +49,7 @@ class EstimatedParticle:
         return self.__particle_collection
     
 
-    def is_converged(self) -> bool:
+    def is_converged(self, clusters_count: int) -> bool:
         """
         ## パーティクルのクラスタ数を計算する
         """
@@ -62,7 +62,7 @@ class EstimatedParticle:
         cluster_amount = ConvergenceJudgment.calculate_cluster_amount(X=X)
 
         if (
-            cluster_amount <= CLUSTER_AMOUNT_THRESHOLD
+            cluster_amount <= clusters_count
             and self.get_convergence_ratio() >= CONVERGENCE_DECENTRALIZATION_THRESHOLD
         ):
             return True

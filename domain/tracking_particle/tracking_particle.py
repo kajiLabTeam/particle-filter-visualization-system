@@ -18,6 +18,7 @@ class TrackingParticle:
         initial_particle_count: int,
         particle_step_error_sd: int,
         particle_angle_error_sd: int,
+        convergence_judgment_clusters_count: int,
         # model_path: str = RSSI_MODEL_PATH,
     ) -> None:
         self.__coverage_count = 0
@@ -25,6 +26,7 @@ class TrackingParticle:
         self.particle_step_error_sd = particle_step_error_sd
         self.particle_angle_error_sd = particle_angle_error_sd
         self.__correct_trajectory = correct_trajectory
+        self.__convergence_judgment_clusters_count = convergence_judgment_clusters_count
         # self.__likelihood = Likelihood(mode_path=model_path)
         self.__estimation_particles: List[EstimatedParticle] = [
             EstimatedParticleFactory().create(
@@ -115,9 +117,10 @@ class TrackingParticle:
                 self.__coverage_position is None
                 and i != 0
                 and i % CONVERGENCE_JUDGEMENT_NUMBER == 0
-                and estimation_particles.is_converged()
+                and estimation_particles.is_converged(self.__convergence_judgment_clusters_count)
             ):
                 print("収束しました")
+                print(f"convergence_judgment_clusters_count: {self.__convergence_judgment_clusters_count}")
                 print(f"Initial particle count: {self.initial_particle_count}")
                 print(f"Step error standard deviation: {self.particle_step_error_sd}")
                 print(f"Angle error standard deviation: {self.particle_angle_error_sd}")

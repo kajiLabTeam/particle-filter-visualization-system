@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from service.perform_particle import perform_particle
+from domain.tracking_particle.tracking_particle import TrackingParticle
 import io
 import os
 from moviepy import VideoFileClip
@@ -10,6 +11,7 @@ from moviepy import VideoFileClip
 initial_particle_count = 1000 # 初期値
 particle_step_error_sd = 10
 particle_angle_error_sd = 10
+convergence_judgment_clusters_count = 2
 
 class Hyperparameters(BaseModel):
     initial_particle_count: int
@@ -58,7 +60,8 @@ async def perform_particlefiltering(
     perform_particle(
         initial_particle_count=request.hyperparameters.initial_particle_count,
         particle_step_error_sd=request.hyperparameters.particle_step_error_sd,
-        particle_angle_error_sd=request.hyperparameters.particle_angle_error_sd
+        particle_angle_error_sd=request.hyperparameters.particle_angle_error_sd,
+        convergence_judgment_clusters_count=request.hyperparameters.convergence_judgment_clusters_count
     )
 
     # GIFをMP4に変換

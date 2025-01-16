@@ -2,6 +2,10 @@
 
 ## 実行方法
 
+```bash
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
 ### 仮想環境にログイン
 
 ```bash
