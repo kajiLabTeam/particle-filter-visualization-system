@@ -27,9 +27,11 @@ def track_ideal(
     floor_map_path: str,
     correct_trajectory_coordinates: Sequence[Sequence[int | float]],
     output_path: str,
+    output_reversed_path: str,
     initial_particle_count: int,
     particle_step_error_sd: int,
     particle_angle_error_sd: int,
+    convergence_judgment_clusters_count: int,
 ) -> None:
     print(f"理想 {floor_map_path} start")  # noqa: T201
     ut = time.time()
@@ -53,6 +55,7 @@ def track_ideal(
         initial_particle_count=particle_count,  # 取得した値を利用
         particle_step_error_sd=step_error_sd,
         particle_angle_error_sd=angle_error_sd,
+        convergence_judgment_clusters_count=convergence_judgment_clusters_count
     )
     tracking_particle.track()
 
@@ -82,6 +85,7 @@ def perform_particle(
     initial_particle_count: int,
     particle_step_error_sd: int,
     particle_angle_error_sd: int,
+    convergence_judgment_clusters_count: int
 ) -> None:
     # 理想の軌跡を生成
     ideal_file_count = len(list(Path(IDEAL_IMAGE_PATH).glob("*")))
@@ -103,4 +107,5 @@ def perform_particle(
             initial_particle_count=int(initial_particle_count),
             particle_step_error_sd=int(particle_step_error_sd),
             particle_angle_error_sd=int(particle_angle_error_sd),
+            convergence_judgment_clusters_count=int(convergence_judgment_clusters_count)
         )

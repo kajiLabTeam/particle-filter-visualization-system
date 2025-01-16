@@ -49,7 +49,7 @@ class EstimatedParticle:
     def get_particle_collection(self) -> ParticleCollection:
         return self.__particle_collection
 
-    def is_converged(self) -> bool:
+    def is_converged(self,clusters_count: int) -> bool:
         """## パーティクルのクラスタ数を計算する"""
         matrix_x = np.array(
             [[particle.get_x(), particle.get_y()] for particle in self.__particle_collection]
@@ -57,7 +57,7 @@ class EstimatedParticle:
         cluster_amount = ConvergenceJudgment.calculate_cluster_amount(matrix_x=matrix_x)
 
         return (
-            cluster_amount <= CLUSTER_AMOUNT_THRESHOLD
+            cluster_amount <= clusters_count
             and self.get_convergence_ratio() >= CONVERGENCE_DECENTRALIZATION_THRESHOLD
         )
 

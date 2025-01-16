@@ -8,10 +8,10 @@ from pydantic import BaseModel
 from app.service.perform_particle import perform_particle
 
 # モジュールレベルの変数として particle_count を定義
-initial_particle_count = 1000  # 初期値
+initial_particle_count = 1000 # 初期値
 particle_step_error_sd = 10
 particle_angle_error_sd = 10
-
+convergence_judgment_clusters_count = 2
 
 class Hyperparameters(BaseModel):
     initial_particle_count: int
@@ -60,6 +60,7 @@ async def perform_particlefiltering(request: PerformParticleFilteringRequest) ->
         initial_particle_count=request.hyperparameters.initial_particle_count,
         particle_step_error_sd=request.hyperparameters.particle_step_error_sd,
         particle_angle_error_sd=request.hyperparameters.particle_angle_error_sd,
+        convergence_judgment_clusters_count=request.hyperparameters.convergence_judgment_clusters_count
     )
 
     # GIFをMP4に変換
