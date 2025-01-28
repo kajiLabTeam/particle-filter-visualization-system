@@ -17,10 +17,17 @@ class TrackingParticle:
         self,
         floor_map: FloorMap,
         correct_trajectory: CorrectTrajectory,
+        # hyperparameters
         initial_particle_count: int,
         particle_step_error_sd: int,
         particle_angle_error_sd: int,
         convergence_judgment_clusters_count: int,
+        # settings
+        map_matching_setting: bool = False,
+        fingerprint_setting: bool = False,
+        clusters_color_setting: bool = False,
+        correct_trajectory_setting: bool = False,
+        estimated_trajectory_setting: bool = False,
         # model_path: str = RSSI_MODEL_PATH,  # noqa: ERA001
     ) -> None:
         self.__coverage_count = 0

@@ -28,10 +28,16 @@ def track_ideal(
     correct_trajectory_coordinates: Sequence[Sequence[int | float]],
     output_path: str,
     output_reversed_path: str,
+    # hyperparameters
     initial_particle_count: int,
     particle_step_error_sd: int,
     particle_angle_error_sd: int,
     convergence_judgment_clusters_count: int,
+    # settings
+    #fingerprint_setting: bool,
+    #clusters_color_setting: bool,
+    correct_trajectory_setting: bool,
+    estimated_trajectory_setting: bool,
 ) -> None:
     print(f"理想 {floor_map_path} start")  # noqa: T201
     ut = time.time()
@@ -39,7 +45,9 @@ def track_ideal(
     # フロアマップと正解軌跡の生成
     floor_image = Image.open(floor_map_path)
     floor_map = FloorMap(floor_image)
-    correct_trajectory = CorrectTrajectory(correct_trajectory_coordinates)
+    correct_trajectory = None
+    if correct_trajectory_setting==True:
+        correct_trajectory = CorrectTrajectory(correct_trajectory_coordinates)
 
     # パーティクルフィルタによる追跡の実行
     # アルゴリズム説明:https://kjlb.esa.io/posts/5514
@@ -50,12 +58,16 @@ def track_ideal(
     angle_error_sd = particle_angle_error_sd  # 値を取得
 
     tracking_particle = TrackingParticle(
-        correct_trajectory=correct_trajectory,
+        correct_trajectory=correct_trajectory or CorrectTrajectory([]), # ここで正解軌跡を設定　間違ってるかも
         floor_map=floor_map,
-        initial_particle_count=particle_count,  # 取得した値を利用
+        # hyperparameters
+        initial_particle_count=particle_count, 
         particle_step_error_sd=step_error_sd,
         particle_angle_error_sd=angle_error_sd,
-        convergence_judgment_clusters_count=convergence_judgment_clusters_count
+        convergence_judgment_clusters_count=convergence_judgment_clusters_count,
+        # settings
+        #fingerprint_setting=fingerprint_setting,
+        #clusters_color_setting=clusters_color_setting,
     )
     tracking_particle.track()
 
@@ -72,7 +84,7 @@ def track_ideal(
 
     else:
         ParticleFloorMap.generate_realtime_gif(
-            floor_map=floor_map,
+            floor_map=floor_map,  
             tracking_particle=tracking_particle,
             realtime_estimated_trajectory=realtime_estimated_trajectory,
             file_path=output_path,
@@ -82,30 +94,44 @@ def track_ideal(
 
 
 def perform_particle(
+    # hyperparameters
     initial_particle_count: int,
     particle_step_error_sd: int,
     particle_angle_error_sd: int,
-    convergence_judgment_clusters_count: int
+    convergence_judgment_clusters_count: int,
+    # settings
+    map_matching_setting: bool,
+    #fingerprint_setting: bool,
+    #clusters_color_setting: bool,
+    correct_trajectory_setting: bool,
+    estimated_trajectory_setting: bool,
 ) -> None:
     # 理想の軌跡を生成
     ideal_file_count = len(list(Path(IDEAL_IMAGE_PATH).glob("*")))
     for i in range(1, ideal_file_count + 1):
         # パーティクルフィルタの実行
-        track_ideal(
-            floor_map_path=f"{IDEAL_IMAGE_PATH}/floor{i}.png",
-            correct_trajectory_coordinates=(
-                CORRECT_TRAJECTORY_COORDINATES1
-                if i == 1
-                else (
-                    CORRECT_TRAJECTORY_COORDINATES2
-                    if i == 2  # noqa: PLR2004
-                    else CORRECT_TRAJECTORY_COORDINATES3
+        if(map_matching_setting == True):
+            track_ideal(
+                floor_map_path=f"{IDEAL_IMAGE_PATH}/floor{i}.png",
+                correct_trajectory_coordinates=(
+                    CORRECT_TRAJECTORY_COORDINATES1
+                    if i == 1
+                    else (
+                        CORRECT_TRAJECTORY_COORDINATES2
+                        if i == 2  # noqa: PLR2004
+                        else CORRECT_TRAJECTORY_COORDINATES3
+                    )
+                ),
+                    output_path=f"{IDEAL_OUTPUT_NORMAL_PATH}/result-{i}.gif",
+                    output_reversed_path=f"{IDEAL_OUTPUT_REVERSED_PATH}/reversed-result-{i}.gif",
+                    # hyperparameters
+                    initial_particle_count=int(initial_particle_count),
+                    particle_step_error_sd=int(particle_step_error_sd),
+                    particle_angle_error_sd=int(particle_angle_error_sd),
+                    convergence_judgment_clusters_count=int(convergence_judgment_clusters_count),
+                    # settings
+                    #fingerprint_setting=bool(fingerprint_setting),
+                    #clusters_color_setting=bool(clusters_color_setting),
+                    correct_trajectory_setting=bool(correct_trajectory_setting),
+                    estimated_trajectory_setting=bool(estimated_trajectory_setting)
                 )
-            ),
-            output_path=f"{IDEAL_OUTPUT_NORMAL_PATH}/result-{i}.gif",
-            output_reversed_path=f"{IDEAL_OUTPUT_REVERSED_PATH}/reversed-result-{i}.gif",
-            initial_particle_count=int(initial_particle_count),
-            particle_step_error_sd=int(particle_step_error_sd),
-            particle_angle_error_sd=int(particle_angle_error_sd),
-            convergence_judgment_clusters_count=int(convergence_judgment_clusters_count)
-        )
