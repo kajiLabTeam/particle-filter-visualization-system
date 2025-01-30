@@ -7,7 +7,7 @@ import io
 import os
 from moviepy.editor import VideoFileClip
 
-# モジュールレベルの変数として particle_count を定義
+# モジュールレベルの変数として Hyperparameters を定義
 initial_particle_count = 1000 # 初期値
 particle_step_error_sd = 10
 particle_angle_error_sd = 10

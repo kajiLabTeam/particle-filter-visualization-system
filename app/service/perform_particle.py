@@ -74,7 +74,7 @@ def track_ideal(
     realtime_estimated_trajectory = RealtimeEstimatedTrajectory(tracking_particle=tracking_particle)
 
     # Gifの生成処理
-    if tracking_particle.get_coverage_position() is not None:
+    if tracking_particle.get_coverage_position() is not None and estimated_trajectory_setting == True:
         ParticleFloorMap.generate_realtime_gif(
             floor_map=floor_map,
             tracking_particle=tracking_particle,
@@ -83,10 +83,9 @@ def track_ideal(
         )
 
     else:
-        ParticleFloorMap.generate_realtime_gif(
-            floor_map=floor_map,  
+        ParticleFloorMap.not_estimate_gif(
+            floor_map=floor_map,
             tracking_particle=tracking_particle,
-            realtime_estimated_trajectory=realtime_estimated_trajectory,
             file_path=output_path,
         )
 

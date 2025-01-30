@@ -85,6 +85,42 @@ class ParticleFloorMap:
         print(f"Generated GIF: {file_path}")  # noqa: T201
 
     @staticmethod
+    def not_estimate_gif(
+        floor_map: FloorMap,
+        tracking_particle: TrackingParticle,
+        file_path: str,
+    ) -> None:
+        """## 正解奇跡のみをGIFアニメーションとして生成する"""
+        images_cluster: list[Image] = []
+
+        for i, estimation_particles in enumerate(tracking_particle):
+            floor_map_copy = floor_map.clone()
+
+            # 正解軌跡を描画
+            ParticleFloorMap.__drawing_trajectory(
+                floor_map=floor_map_copy,
+                current_position=(
+                    estimation_particles.get_current_position().get_x(),
+                    estimation_particles.get_current_position().get_y(),
+                ),
+                current_color=CORRECT_CURRENT_POSITION_COLOR,
+                trajectory=tracking_particle.get_correct_trajectory(),
+                trajectory_color=CORRECT_TRAJECTORY_COLOR,
+            )
+
+            images_cluster.append(floor_map_copy.get_floor_map().copy())
+
+        images_cluster[0].save(
+            file_path,
+            save_all=True,
+            append_images=images_cluster[1:],
+            duration=100,
+            loop=0,
+        )
+
+        print(f"Generated GIF: {file_path}")  # noqa: T201
+
+    @staticmethod
     def generate_realtime_gif(
         floor_map: FloorMap,
         tracking_particle: TrackingParticle,
