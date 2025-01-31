@@ -34,10 +34,10 @@ def track_ideal(
     particle_angle_error_sd: int,
     convergence_judgment_clusters_count: int,
     # settings
-    #fingerprint_setting: bool,
-    #clusters_color_setting: bool,
-    correct_trajectory_setting: bool,
-    estimated_trajectory_setting: bool,
+    #is_use_fingerprint: bool,
+    #is_use_clusters_color: bool,
+    is_display_correct_trajectory: bool,
+    is_display_estimated_trajectory: bool,
 ) -> None:
     print(f"理想 {floor_map_path} start")  # noqa: T201
     ut = time.time()
@@ -45,9 +45,10 @@ def track_ideal(
     # フロアマップと正解軌跡の生成
     floor_image = Image.open(floor_map_path)
     floor_map = FloorMap(floor_image)
-    correct_trajectory = None
-    if correct_trajectory_setting==True:
-        correct_trajectory = CorrectTrajectory(correct_trajectory_coordinates)
+
+    correct_trajectory = CorrectTrajectory(correct_trajectory_coordinates)
+
+
 
     # パーティクルフィルタによる追跡の実行
     # アルゴリズム説明:https://kjlb.esa.io/posts/5514
@@ -58,7 +59,7 @@ def track_ideal(
     angle_error_sd = particle_angle_error_sd  # 値を取得
 
     tracking_particle = TrackingParticle(
-        correct_trajectory=correct_trajectory or CorrectTrajectory([]), # ここで正解軌跡を設定　間違ってるかも
+        correct_trajectory=correct_trajectory,
         floor_map=floor_map,
         # hyperparameters
         initial_particle_count=particle_count, 
@@ -66,15 +67,15 @@ def track_ideal(
         particle_angle_error_sd=angle_error_sd,
         convergence_judgment_clusters_count=convergence_judgment_clusters_count,
         # settings
-        #fingerprint_setting=fingerprint_setting,
-        #clusters_color_setting=clusters_color_setting,
+        #is_use_fingerprint=is_use_fingerprint,
+        #is_use_clusters_color=is_use_clusters_color,
     )
     tracking_particle.track()
 
     realtime_estimated_trajectory = RealtimeEstimatedTrajectory(tracking_particle=tracking_particle)
 
     # Gifの生成処理
-    if tracking_particle.get_coverage_position() is not None and estimated_trajectory_setting == True:
+    if tracking_particle.get_coverage_position() is not None and is_display_estimated_trajectory == True and is_display_correct_trajectory == True:
         ParticleFloorMap.generate_realtime_gif(
             floor_map=floor_map,
             tracking_particle=tracking_particle,
@@ -82,12 +83,28 @@ def track_ideal(
             file_path=output_path,
         )
 
-    else:
+    elif is_display_estimated_trajectory == True and is_display_correct_trajectory == False:
+        ParticleFloorMap.not_correct_gif(
+            floor_map=floor_map,
+            tracking_particle=tracking_particle,
+            realtime_estimated_trajectory=realtime_estimated_trajectory,
+            file_path=output_path,
+        )
+
+    elif is_display_estimated_trajectory == False and is_display_correct_trajectory == True:
         ParticleFloorMap.not_estimate_gif(
             floor_map=floor_map,
             tracking_particle=tracking_particle,
             file_path=output_path,
         )
+    
+    else:
+        ParticleFloorMap.only_floor_map_gif(
+            floor_map=floor_map,
+            tracking_particle=tracking_particle,
+            file_path=output_path,
+        )
+
 
     print(f"elapsed_time: {time.time() - ut}")  # noqa: T201
 
@@ -99,17 +116,17 @@ def perform_particle(
     particle_angle_error_sd: int,
     convergence_judgment_clusters_count: int,
     # settings
-    map_matching_setting: bool,
-    #fingerprint_setting: bool,
-    #clusters_color_setting: bool,
-    correct_trajectory_setting: bool,
-    estimated_trajectory_setting: bool,
+    is_use_map_matching: bool,
+    #is_use_fingerprint: bool,
+    #is_use_clusters_color: bool,
+    is_display_correct_trajectory: bool,
+    is_display_estimated_trajectory: bool,
 ) -> None:
     # 理想の軌跡を生成
     ideal_file_count = len(list(Path(IDEAL_IMAGE_PATH).glob("*")))
     for i in range(1, ideal_file_count + 1):
         # パーティクルフィルタの実行
-        if(map_matching_setting == True):
+        if(is_use_map_matching == True):
             track_ideal(
                 floor_map_path=f"{IDEAL_IMAGE_PATH}/floor{i}.png",
                 correct_trajectory_coordinates=(
@@ -129,8 +146,8 @@ def perform_particle(
                     particle_angle_error_sd=int(particle_angle_error_sd),
                     convergence_judgment_clusters_count=int(convergence_judgment_clusters_count),
                     # settings
-                    #fingerprint_setting=bool(fingerprint_setting),
-                    #clusters_color_setting=bool(clusters_color_setting),
-                    correct_trajectory_setting=bool(correct_trajectory_setting),
-                    estimated_trajectory_setting=bool(estimated_trajectory_setting)
+                    #is_use_fingerprint=bool(is_use_fingerprint),
+                    #is_use_clusters_color=bool(is_use_clusters_color),
+                    is_display_correct_trajectory=bool(is_display_correct_trajectory),
+                    is_display_estimated_trajectory=bool(is_display_estimated_trajectory)
                 )

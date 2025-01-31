@@ -20,11 +20,11 @@ class Hyperparameters(BaseModel):
     particle_angle_error_sd: int
 
 class Settings(BaseModel):
-    map_matching_setting: bool
-    fingerprint_setting: bool
-    clusters_color_setting: bool
-    correct_trajectory_setting: bool
-    estimated_trajectory_setting: bool
+    is_use_map_matching: bool
+    is_use_fingerprint: bool
+    is_use_clusters_color: bool
+    is_display_correct_trajectory: bool
+    is_display_estimated_trajectory: bool
 
 class PerformParticleFilteringRequest(BaseModel):
     """
@@ -64,11 +64,11 @@ async def perform_particlefiltering(
         particle_angle_error_sd=request.hyperparameters.particle_angle_error_sd,
         convergence_judgment_clusters_count=request.hyperparameters.convergence_judgment_clusters_count,
         # settings
-        map_matching_setting=request.settings.map_matching_setting,
-        #fingerprint_setting=request.settings.fingerprint_setting,
-        #clusters_color_setting=request.settings.clusters_color_setting,
-        correct_trajectory_setting=request.settings.correct_trajectory_setting,
-        estimated_trajectory_setting=request.settings.estimated_trajectory_setting
+        is_use_map_matching=request.settings.is_use_map_matching,
+        #is_use_fingerprint=request.settings.is_use_fingerprint,
+        #is_use_clusters_color=request.settings.is_use_clusters_color,
+        is_display_correct_trajectory=request.settings.is_display_correct_trajectory,
+        is_display_estimated_trajectory=request.settings.is_display_estimated_trajectory
     )
 
     # GIFをMP4に変換

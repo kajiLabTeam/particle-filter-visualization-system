@@ -5,6 +5,10 @@ from app.domain.correct_position.correct_position import CorrectPosition
 
 class CorrectTrajectory:
     def __init__(self, trajectory: Sequence[Sequence[int | float]]) -> None:
+        if not trajectory:  # 空リストを考慮
+            self.__correct_trajectory = []
+            return
+
         if len(trajectory[0]) == 7:  # noqa: PLR2004
             self.__correct_trajectory = [
                 CorrectPosition(

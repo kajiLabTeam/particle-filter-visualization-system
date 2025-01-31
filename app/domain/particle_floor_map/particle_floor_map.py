@@ -90,7 +90,7 @@ class ParticleFloorMap:
         tracking_particle: TrackingParticle,
         file_path: str,
     ) -> None:
-        """## 正解奇跡のみをGIFアニメーションとして生成する"""
+        """## 推定座標がない状態のをGIFアニメーションとして生成する"""
         images_cluster: list[Image] = []
 
         for i, estimation_particles in enumerate(tracking_particle):
@@ -119,6 +119,84 @@ class ParticleFloorMap:
         )
 
         print(f"Generated GIF: {file_path}")  # noqa: T201
+        
+    @staticmethod
+    def not_correct_gif(
+        floor_map: FloorMap,
+        tracking_particle: TrackingParticle,
+        realtime_estimated_trajectory: RealtimeEstimatedTrajectory,
+        file_path: str,
+    ) -> None:
+        """## 正解軌跡がない状態をGIFアニメーションとして生成する"""
+        images_cluster: list[Image] = []
+
+        for i, estimation_particles in enumerate(tracking_particle):
+            floor_map_copy = floor_map.clone()
+
+            # パーティクルの位置を描画
+            for particle in estimation_particles:
+                floor_map_copy.depict_circle(
+                    position=(particle.get_x(), particle.get_y()),
+                    color=CANDIDATE_PARTICLES_COLOR,
+                    outline_color=PARTICLE_OUTLINE_COLOR,
+                )
+
+            # リアルタイム推定軌跡を描画
+            ParticleFloorMap.__drawing_trajectory(
+                floor_map=floor_map_copy,
+                current_position=(
+                    realtime_estimated_trajectory[i].get_x(),
+                    realtime_estimated_trajectory[i].get_y(),
+                ),
+                current_color=REALTIME_ESTIMATED__CURRENT_POSITION_COLOR,
+                trajectory=realtime_estimated_trajectory,
+                trajectory_color=REALTIME_ESTIMATED_TRAJECTORY_COLOR,
+            )
+
+            images_cluster.append(floor_map_copy.get_floor_map().copy())
+
+        images_cluster[0].save(
+            file_path,
+            save_all=True,
+            append_images=images_cluster[1:],
+            duration=100,
+            loop=0,
+        )
+
+        print(f"Generated GIF: {file_path}")  # noqa: T201
+
+    @staticmethod
+    def only_floor_map_gif(
+        floor_map: FloorMap,
+        tracking_particle: TrackingParticle,
+        file_path: str,
+    ) -> None:
+        """## 推定軌跡も正解軌跡もない状態をGIFアニメーションとして生成する"""
+        images_cluster: list[Image] = []
+
+        for i, estimation_particles in enumerate(tracking_particle):
+            floor_map_copy = floor_map.clone()
+
+            # パーティクルの位置を描画
+            for particle in estimation_particles:
+                floor_map_copy.depict_circle(
+                    position=(particle.get_x(), particle.get_y()),
+                    color=CANDIDATE_PARTICLES_COLOR,
+                    outline_color=PARTICLE_OUTLINE_COLOR,
+                )
+
+            images_cluster.append(floor_map_copy.get_floor_map().copy())
+
+        images_cluster[0].save(
+            file_path,
+            save_all=True,
+            append_images=images_cluster[1:],
+            duration=100,
+            loop=0,
+        )
+
+        print(f"Generated GIF: {file_path}")  # noqa: T201
+
 
     @staticmethod
     def generate_realtime_gif(
