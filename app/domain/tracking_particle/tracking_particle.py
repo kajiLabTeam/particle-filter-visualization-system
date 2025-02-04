@@ -23,11 +23,11 @@ class TrackingParticle:
         particle_angle_error_sd: int,
         convergence_judgment_clusters_count: int,
         # settings
-        is_use_map_matching: bool = False,
-        is_use_fingerprint: bool = False,
-        is_use_clusters_color: bool = False,
-        is_display_correct_trajectory: bool = False,
-        is_display_estimated_trajectory: bool = False,
+        use_map_matching: bool = False,
+        use_fingerprint: bool = False,
+        use_clusters_color: bool = False,
+        display_correct_trajectory: bool = False,
+        display_estimated_trajectory: bool = False,
         # model_path: str = RSSI_MODEL_PATH,  # noqa: ERA001
     ) -> None:
         self.__coverage_count = 0
