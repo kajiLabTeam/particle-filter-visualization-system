@@ -12,11 +12,13 @@ class Particle:
         y: int,
         weight: float,
         direction: float,
+        cluster_id: int = -1,  # クラスタ ID（デフォルトは未分類）
     ) -> None:
         self.__x = x
         self.__y = y
         self.__weight = weight
         self.__direction = direction
+        self.__cluster_id = cluster_id  # クラスタ ID を追加
 
     @classmethod
     def create_random_particle(cls, x_range: int, y_range: int) -> "Particle":
@@ -47,6 +49,14 @@ class Particle:
 
     def set_color(self, color: tuple[int, int, int, int]) -> None:
         self.__color = color
+    
+    def get_cluster_id(self) -> int:
+        """パーティクルのクラスタ ID を取得する"""
+        return self.__cluster_id
+
+    def set_cluster_id(self, cluster_id: int) -> None:
+        """パーティクルのクラスタ ID を設定する"""
+        self.__cluster_id = cluster_id
 
     def new(self, weight: float, step: int, direction_error: float) -> "Particle":
         """## 指定されたパーティクルの座標と角度を元に新しいパーティクルを生成する"""

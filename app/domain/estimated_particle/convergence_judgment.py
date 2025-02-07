@@ -4,6 +4,7 @@ from scipy import stats
 from sklearn.cluster import KMeans
 
 from app.domain.estimated_particle.cluster import Cluster
+from app.domain.particle_collection.particle_collection import ParticleCollection 
 
 
 class ConvergenceJudgment:
@@ -13,15 +14,21 @@ class ConvergenceJudgment:
         self.__k_means_args = k_means_args
 
     @staticmethod
-    def calculate_cluster_amount(matrix_x: NDArray[np.float64]) -> int:
+    def calculate_cluster_amount(particle_collection:ParticleCollection) -> int:
         """## クラスタ数を計算し、クラスタごとのサイズを返す"""
+        matrix_x = np.array(
+            [[particle.get_x(), particle.get_y()] for particle in particle_collection]
+        )
+
         matrix_x_standardized = stats.zscore(matrix_x)
 
-        clusters = ConvergenceJudgment(random_state=1).fit(matrix_x_standardized).cluster_sizes_
+        clusters = ConvergenceJudgment(random_state=1).fit(matrix_x_standardized,particle_collection).cluster_sizes_
+
 
         return len(clusters)
 
-    def fit(self, matrix_x: NDArray[np.float64]) -> "ConvergenceJudgment":
+    def fit(self, matrix_x: NDArray[np.float64],particle_collection:ParticleCollection) -> "ConvergenceJudgment":
+        """## データをクラスタリングしてクラスタを生成する"""
         self.__clusters: list[Cluster] = []
 
         clusters = Cluster.build(
@@ -36,6 +43,16 @@ class ConvergenceJudgment:
         self.cluster_centers_ = np.array([c.center for c in self.__clusters])
         self.cluster_log_likelihoods_ = np.array([c.log_likelihood() for c in self.__clusters])
         self.cluster_sizes_ = np.array([c.size for c in self.__clusters])
+        
+        for particle in particle_collection:
+            for cluster in self.__clusters:
+                # cluster.matrix_x の座標をリスト化
+                cluster_points = set(map(tuple, cluster.data))
+
+                # パーティクルの (x, y) が cluster.matrix_x に含まれているかチェック
+                if (particle.get_x(), particle.get_y()) in cluster_points:
+                    particle.set_cluster_id(cluster.label) # パーティクルにクラスタ ID を設定
+                    break  # クラスタが見つかったらループを抜ける
 
         return self
 

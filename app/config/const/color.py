@@ -18,3 +18,20 @@ CANDIDATE_PARTICLES_COLOR: tuple[int, int, int, int] = (128, 128, 128, 255)
 
 PARTICLE_OUTLINE_COLOR: tuple[int, int, int, int] = (0, 0, 0, 255)
 OUTLINE_COLOR: tuple[int, int, int, int] = (0, 0, 0, 255)
+
+PARTICLE_CLUSTER_COLORS: list[tuple[int, int, int, int]] = [
+    (255, 0, 0, 255),
+    (0, 255, 0, 255),
+    (0, 0, 255, 255),
+    (255, 255, 0, 255),
+    (255, 0, 255, 255),
+    (0, 255, 255, 255),
+    (255, 255, 255, 255),
+    (128, 0, 0, 255),
+    (0, 128, 0, 255),
+    (0, 0, 128, 255),
+    (128, 128, 0, 255),
+    (128, 0, 128, 255),
+    (0, 128, 128, 255),
+    (128, 128, 128, 255),
+]

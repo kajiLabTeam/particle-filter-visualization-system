@@ -27,6 +27,7 @@ class Cluster:
         self.size = self.data.shape[0]
         self.df = self.data.shape[1] * (self.data.shape[1] + 3) / 2
         self.center = k_means.cluster_centers_[label]
+        self.label = label
 
         if self.size > 1:
             self.cov = np.cov(self.data.T)

@@ -51,10 +51,7 @@ class EstimatedParticle:
 
     def is_converged(self,clusters_count: int) -> bool:
         """## パーティクルのクラスタ数を計算する"""
-        matrix_x = np.array(
-            [[particle.get_x(), particle.get_y()] for particle in self.__particle_collection]
-        )
-        cluster_amount = ConvergenceJudgment.calculate_cluster_amount(matrix_x=matrix_x)
+        cluster_amount = ConvergenceJudgment.calculate_cluster_amount(self.__particle_collection)
 
         return (
             cluster_amount <= clusters_count
