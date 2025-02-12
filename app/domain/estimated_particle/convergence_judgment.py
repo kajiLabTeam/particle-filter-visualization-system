@@ -20,6 +20,11 @@ class ConvergenceJudgment:
             [[particle.get_x(), particle.get_y()] for particle in particle_collection]
         )
 
+        print(f"particle_collection: {particle_collection}")  # noqa: T201
+        print(f"matrix_x: {matrix_x}")  # noqa: T201
+
+        # raise ValueError("matrix_x**********")
+
         matrix_x_standardized = stats.zscore(matrix_x)
 
         clusters = ConvergenceJudgment(random_state=1).fit(matrix_x_standardized,particle_collection).cluster_sizes_
@@ -43,16 +48,20 @@ class ConvergenceJudgment:
         self.cluster_centers_ = np.array([c.center for c in self.__clusters])
         self.cluster_log_likelihoods_ = np.array([c.log_likelihood() for c in self.__clusters])
         self.cluster_sizes_ = np.array([c.size for c in self.__clusters])
-        
-        for particle in particle_collection:
-            for cluster in self.__clusters:
-                # cluster.matrix_x の座標をリスト化
-                cluster_points = set(map(tuple, cluster.data))
 
-                # パーティクルの (x, y) が cluster.matrix_x に含まれているかチェック
-                if (particle.get_x(), particle.get_y()) in cluster_points:
-                    particle.set_cluster_id(cluster.label) # パーティクルにクラスタ ID を設定
-                    break  # クラスタが見つかったらループを抜ける
+        particle_matrix = np.array(
+            [[particle.get_x(), particle.get_y()] for particle in particle_collection]
+        )
+
+        particle_matrix_standardized = stats.zscore(particle_matrix)
+
+        for cluster in self.__clusters:
+            for cluster_particle in cluster.data:
+                for index, particle in enumerate(particle_matrix_standardized):
+                    if np.array_equal(cluster_particle, particle):
+                       particle_collection[index].set_cluster_id(cluster.label)
+                       print(f"particle_collection[index].get_cluster_id(): {particle_collection[index].get_cluster_id()}")  # noqa: T201
+                    break
 
         return self
 

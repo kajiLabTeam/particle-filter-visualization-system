@@ -10,6 +10,8 @@ class Cluster:
         if index is None:
             index = np.arange(matrix_x.shape[0])
 
+        print(f"fitted labels: {k_means.labels_}")  # noqa: T201
+
         return [
             Cluster(matrix_x, index, k_means, label)
             for label in range(k_means.get_params()["n_clusters"])
@@ -31,6 +33,7 @@ class Cluster:
 
         if self.size > 1:
             self.cov = np.cov(self.data.T)
+            
             # Check for singular matrix and adjust if necessary
             if np.linalg.matrix_rank(self.cov) < self.cov.shape[0]:
                 self.cov += np.eye(self.cov.shape[0]) * 1e-6  # Adding a small value to diagonal

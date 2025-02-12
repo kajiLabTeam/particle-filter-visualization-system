@@ -13,6 +13,7 @@ from app.config.const.color import (
     REALTIME_ESTIMATED_TRAJECTORY_COLOR,
     REVERSE_CURRENT_ESTIMATED_POSITION_COLOR,
     REVERSE_ESTIMATED_TRAJECTORY_COLOR,
+    PARTICLE_CLUSTER_COLORS
 )
 from app.domain.correct_trajectory.correct_trajectory import CorrectTrajectory
 from app.domain.estimated_particle.estimated_particle import EstimatedParticle
@@ -181,9 +182,10 @@ class ParticleFloorMap:
             for particle in estimation_particles:
                 floor_map_copy.depict_circle(
                     position=(particle.get_x(), particle.get_y()),
-                    color=CANDIDATE_PARTICLES_COLOR,
+                    color=PARTICLE_CLUSTER_COLORS[particle.get_cluster_id()],
                     outline_color=PARTICLE_OUTLINE_COLOR,
                 )
+                #print(f"cluster_id: {particle.get_cluster_id()}")  # noqa: T201
 
             images_cluster.append(floor_map_copy.get_floor_map().copy())
 
