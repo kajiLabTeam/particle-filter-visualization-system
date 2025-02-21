@@ -5,6 +5,10 @@ from sklearn.cluster import KMeans
 
 from app.domain.estimated_particle.cluster import Cluster
 from app.domain.particle_collection.particle_collection import ParticleCollection 
+from app.config.const.amount import (
+    CLUSTER_SIZE_THRESHOLD,
+    N_CLUSTERS
+)
 
 
 class ConvergenceJudgment:
@@ -27,8 +31,26 @@ class ConvergenceJudgment:
 
         matrix_x_standardized = stats.zscore(matrix_x)
 
-        clusters = ConvergenceJudgment(random_state=1).fit(matrix_x_standardized,particle_collection).cluster_sizes_
+        clusters = ConvergenceJudgment(random_state=1).fit(matrix_x_standardized,particle_collection).__clusters
+        print(f"clusters: {clusters}")  # noqa: T201
 
+        particle_matrix = np.array(
+            [[particle.get_x(), particle.get_y()] for particle in particle_collection]
+        )
+        particle_matrix_standardized = stats.zscore(particle_matrix)
+
+        count=0
+
+        for cluster in clusters: 
+            count+=1
+            for cluster_particle in cluster.data:
+                for index, particle in enumerate(particle_matrix_standardized):
+                    # print(f"😀")  # noqa: T201
+                    if np.array_equal(cluster_particle, particle):
+                       particle_collection[index].set_cluster_id(count)
+                       print(f"cluster")  # noqa: T201
+                       print(f"particle_collection[index].get_cluster_id(): {particle_collection[index].get_cluster_id()}")  # noqa: T201
+                    # break
 
         return len(clusters)
 
@@ -49,29 +71,15 @@ class ConvergenceJudgment:
         self.cluster_log_likelihoods_ = np.array([c.log_likelihood() for c in self.__clusters])
         self.cluster_sizes_ = np.array([c.size for c in self.__clusters])
 
-        particle_matrix = np.array(
-            [[particle.get_x(), particle.get_y()] for particle in particle_collection]
-        )
-
-        particle_matrix_standardized = stats.zscore(particle_matrix)
-
-        for cluster in self.__clusters:
-            for cluster_particle in cluster.data:
-                for index, particle in enumerate(particle_matrix_standardized):
-                    if np.array_equal(cluster_particle, particle):
-                       particle_collection[index].set_cluster_id(cluster.label)
-                       print(f"particle_collection[index].get_cluster_id(): {particle_collection[index].get_cluster_id()}")  # noqa: T201
-                    break
-
         return self
 
     def __recursively_split(self, clusters: list[Cluster]) -> None:
         for cluster in clusters:
-            if cluster.size <= 3:  # noqa: PLR2004
+            if cluster.size <= CLUSTER_SIZE_THRESHOLD:  # noqa: PLR2004
                 self.__clusters.append(cluster)
                 continue
 
-            k_means = KMeans(2, **self.__k_means_args).fit(cluster.data)
+            k_means = KMeans(N_CLUSTERS, **self.__k_means_args).fit(cluster.data)
             c1, c2 = Cluster.build(cluster.data, k_means, cluster.index)
 
             beta = np.linalg.norm(c1.center - c2.center) / np.sqrt(

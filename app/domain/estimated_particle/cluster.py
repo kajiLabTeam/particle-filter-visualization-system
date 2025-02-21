@@ -10,8 +10,6 @@ class Cluster:
         if index is None:
             index = np.arange(matrix_x.shape[0])
 
-        print(f"fitted labels: {k_means.labels_}")  # noqa: T201
-
         return [
             Cluster(matrix_x, index, k_means, label)
             for label in range(k_means.get_params()["n_clusters"])
