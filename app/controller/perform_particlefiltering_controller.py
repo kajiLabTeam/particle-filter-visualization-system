@@ -25,6 +25,7 @@ class Settings(BaseModel):
     use_clusters_color: bool
     display_correct_trajectory: bool
     display_estimated_trajectory: bool
+    use_maps_number: int
 
 class PerformParticleFilteringRequest(BaseModel):
     """
@@ -51,8 +52,9 @@ router = APIRouter()
 async def perform_particlefiltering(
     request: PerformParticleFilteringRequest
 ):
-    gif_path = "data/output/ideal/normal/result-1.gif"
-    mp4_path = "data/output/ideal/normal/result-1.mp4"
+    
+    gif_path = f"data/output/ideal/normal/result-{request.settings.use_maps_number}.gif"
+    mp4_path = f"data/output/ideal/normal/result-{request.settings.use_maps_number}.mp4"
 
     """
     Perform particle filtering
@@ -66,9 +68,11 @@ async def perform_particlefiltering(
         # settings
         use_map_matching=request.settings.use_map_matching,
         #use_fingerprint=request.settings.use_fingerprint,
-        #use_clusters_color=request.settings.use_clusters_color,
+        use_clusters_color=request.settings.use_clusters_color,
         display_correct_trajectory=request.settings.display_correct_trajectory,
-        display_estimated_trajectory=request.settings.display_estimated_trajectory
+        display_estimated_trajectory=request.settings.display_estimated_trajectory,
+        use_maps_number=request.settings.use_maps_number,
+
     )
 
     # GIFをMP4に変換
