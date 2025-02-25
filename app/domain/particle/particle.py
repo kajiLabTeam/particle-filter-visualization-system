@@ -1,5 +1,6 @@
 import math
 import secrets
+import uuid
 from typing import Callable
 
 from app.config.const.error import PARTICLES_ANGLE_ERROR
@@ -13,12 +14,17 @@ class Particle:
         weight: float,
         direction: float,
         cluster_id: int = -1,  # クラスタ ID（デフォルトは未分類）
+        id: str | None = None, # パーティクル ID（デフォルトは未分類）
     ) -> None:
         self.__x = x
         self.__y = y
         self.__weight = weight
         self.__direction = direction
         self.__cluster_id = cluster_id  # クラスタ ID を追加
+        if id is None:
+            self.__id = str(uuid.uuid4())
+        else:
+            self.__id = id
 
     @classmethod
     def create_random_particle(cls, x_range: int, y_range: int) -> "Particle":
@@ -26,8 +32,16 @@ class Particle:
         x = secrets.randbelow(x_range + 1)
         y = secrets.randbelow(y_range + 1)
         direction = secrets.randbelow(360)
+        id = str(uuid.uuid4())
 
-        return Particle(x=x, y=y, weight=1.0, direction=direction)
+        return Particle(
+            x=x, 
+            y=y,
+            weight=1.0, 
+            direction=direction, 
+            id=id,
+            cluster_id=-1
+            )
 
     def get_x(self) -> int:
         return self.__x
@@ -43,20 +57,24 @@ class Particle:
 
     def get_weight(self) -> float:
         return self.__weight
+    
+    def get_cluster_id(self) -> int:
+        """パーティクルのクラスタ ID を取得する"""
+        return self.__cluster_id
+    
+    def get_id(self) -> str:
+        return self.__id
 
     def set_weight(self, weight: float) -> None:
         self.__weight = weight
 
     def set_color(self, color: tuple[int, int, int, int]) -> None:
         self.__color = color
-    
-    def get_cluster_id(self) -> int:
-        """パーティクルのクラスタ ID を取得する"""
-        return self.__cluster_id
 
     def set_cluster_id(self, cluster_id: int) -> None:
         """パーティクルのクラスタ ID を設定する"""
         self.__cluster_id = cluster_id
+
 
     def new(self, weight: float, step: int, direction_error: float) -> "Particle":
         """## 指定されたパーティクルの座標と角度を元に新しいパーティクルを生成する"""
@@ -73,6 +91,8 @@ class Particle:
             y=new_y,
             direction=new_direction,
             weight=weight,
+            id=self.__id,
+            cluster_id=self.__cluster_id,
         )
 
     def move(
@@ -92,7 +112,14 @@ class Particle:
         move_x = int(self.__x + step_total * math.cos(radian))
         move_y = int(self.__y + step_total * math.sin(radian))
 
-        return Particle(x=move_x, y=move_y, direction=move_direction, weight=self.__weight)
+        return Particle(
+            x=move_x, 
+            y=move_y, 
+            direction=move_direction, 
+            weight=self.__weight , 
+            id=self.__id,
+            cluster_id=self.__cluster_id
+            )
 
     def is_straight_direction_to_wall(
         self, step: int, is_inside_floor: Callable[[int, int], bool]

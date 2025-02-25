@@ -112,7 +112,7 @@ class TrackingParticle:
                 self.__coverage_position is None
                 and i != 0
                 and i % CONVERGENCE_JUDGEMENT_NUMBER == 0
-                and estimation_particles.is_converged(self.__convergence_judgment_clusters_count)
+                and move_estimation_particles.is_converged(self.__convergence_judgment_clusters_count)
             ):
                 print("収束しました")  # noqa: T201
                 print(f"Initial particle count: {self.initial_particle_count}")  # noqa: T201
@@ -120,9 +120,14 @@ class TrackingParticle:
                 print(f"Step error standard deviation: {self.particle_step_error_sd}")  # noqa: T201
                 print(f"Angle error standard deviation: {self.particle_angle_error_sd}")  # noqa: T201
 
+
                 print(i)  # noqa: T201
                 self.__coverage_count = i
                 self.__coverage_position = move_estimation_particles.estimate_position()
+
+            # cluster_idを出力
+            for particle in move_estimation_particles:
+                print(f"particle.get_cluster_id(): {particle.get_cluster_id()}")
 
             self.add(move_estimation_particles)
 
